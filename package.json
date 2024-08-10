@@ -1,0 +1,48 @@
+{
+  "name": "be",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "prepare": "husky",
+    "start": "node main.js --watch",
+    "dev": "nodemon main.js",
+    "precommit": "lint-staged",
+    "prepush": "npm test",
+    "lint": "eslint --ext .js",
+    "lint:fix": "eslint --fix . --ext .js",
+    "format": "prettier --write ."
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^7.4.0",
+    "express-validator": "^7.1.0",
+    "helmet": "^7.1.0",
+    "hpp": "^0.2.3",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.5.2",
+    "morgan": "^1.10.0",
+    "nodemon": "^3.1.4",
+    "slugify": "^1.6.6",
+    "socket.io": "^4.7.5"
+  },
+  "devDependencies": {
+    "airbnb": "^0.0.2",
+    "eslint": "^9.8.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-airbnb": "0.0.1-security",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jsx-a11y": "^6.9.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "ndb": "^1.1.5",
+    "prettier": "^3.3.3"
+  }
+}
