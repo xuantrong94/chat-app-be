@@ -61,27 +61,28 @@ exports.login = catchAsync(async (req, res, next) => {
 });
 
 exports.logout = catchAsync(async (req, res, next) => {
+  const user = req.user;
+  user.status = 'offline';
+  await user.save({ validateBeforeSave: false });
+  res.clearCookie('jwt');
+
+  return res.status(200).json({
+    status: 'success',
+    message: 'Logged out successfully',
+  });
+});
+
+exports.protect = catchAsync(async (req, res, next) => {
   const jwtToken =
     req.cookies.jwt || req.headers.authorization?.split(' ')[1];
   if (!jwtToken) {
     return next(new AppError('No token provided', 401));
   }
-  try {
-    const decoded = jwt.verify(jwtToken, key);
-    const user = await User.findById(decoded.id);
-    if (!user) {
-      return next(new AppError('User not found', 404));
-    }
-
-    user.status = 'offline';
-    await user.save({ validateBeforeSave: false });
-    res.clearCookie('jwt');
-
-    return res.status(200).json({
-      status: 'success',
-      message: 'Logged out successfully',
-    });
-  } catch (error) {
-    return next(new AppError(error.message, 401));
+  const decoded = jwt.verify(jwtToken, key);
+  const user = await User.findById(decoded.id);
+  if (!user) {
+    return next(new AppError('User not found', 404));
   }
+  req.user = user;
+  next();
 });
