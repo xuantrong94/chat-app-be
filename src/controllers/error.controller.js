@@ -12,7 +12,6 @@ const handleCastErrorDB = (err) => {
 // Giả sử 'email' là trường unique
 // User.create({ email: 'existing@email.com' });
 const handleDuplicateFieldsDB = (err) => {
-  console.log("::: ~ handleDuplicateFieldsDB ~ err:", err)
   // const value = err.msg.match(/(["'])(\\?.)*?\1/)[0];
   const message = `Duplicate field value: ${err.value} for field: ${Object.keys(err.keyValue)[0]}`;
   return new AppError(message, 400);
@@ -101,7 +100,7 @@ module.exports = (err, req, res, next) => {
 
   if (process.env.NODE_ENV !== 'production') {
     sendErrorDev(err, res);
-  } else  {
+  } else {
     let error = { ...err };
     error.message = err.message;
 

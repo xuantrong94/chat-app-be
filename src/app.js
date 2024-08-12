@@ -14,7 +14,7 @@ const socketIo = require('socket.io');
 
 const socketManager = require('./services/socketManager.service');
 const globalErrorHandler = require('./controllers/error.controller');
-const appRoutes = require('./routes/index');
+const appRoutes = require('./routes/app.route');
 
 const app = express();
 

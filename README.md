@@ -15,3 +15,5 @@
 6. /src/utils/
   appError.js
   catchAsync.js
+  /src/controllers/error.controller.js -> globalErrorHandler -> app.js
+7. 

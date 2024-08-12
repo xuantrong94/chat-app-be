@@ -13,10 +13,9 @@ const signToken = (id) => {
 };
 
 const createSendToken = (user, statusCode, res) => {
-  console.log('log1');
   const token = signToken(user._id);
   const cookieOptions = {
-    expires: new Date(Date.now() + expiresIn * 24 * 60 * 60 * 1000),
+    expire: new Date(Date.now() + expiresIn * 24 * 60 * 60 * 1000),
     httpOnly: true,
   };
 
@@ -42,9 +41,47 @@ exports.register = catchAsync(async (req, res) => {
   createSendToken(newUser, 201, res);
 });
 
-exports.login = catchAsync(async (req, res) => {
+exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
-  if (!email || !password)
-    return new AppError('Invalid email or password', 400);
+  if (!email || !password) {
+    return next(new AppError('Invalid email or password', 400));
+  }
+  const user = await User.findOne({ email }).select('+password');
+  if (!user) {
+    return next(new AppError('User not found', 404));
+  }
+  if (!(await user.comparePassword(password))) {
+    return next(new AppError('Invalid email or password', 400));
+  }
+  user.lastSeen = Date.now();
+  user.status = 'online';
+  await user.save({ validateBeforeSave: false });
 
+  createSendToken(user, 200, res);
+});
+
+exports.logout = catchAsync(async (req, res, next) => {
+  const jwtToken =
+    req.cookies.jwt || req.headers.authorization?.split(' ')[1];
+  if (!jwtToken) {
+    return next(new AppError('No token provided', 401));
+  }
+  try {
+    const decoded = jwt.verify(jwtToken, key);
+    const user = await User.findById(decoded.id);
+    if (!user) {
+      return next(new AppError('User not found', 404));
+    }
+
+    user.status = 'offline';
+    await user.save({ validateBeforeSave: false });
+    res.clearCookie('jwt');
+
+    return res.status(200).json({
+      status: 'success',
+      message: 'Logged out successfully',
+    });
+  } catch (error) {
+    return next(new AppError(error.message, 401));
+  }
 });

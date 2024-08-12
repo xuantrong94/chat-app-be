@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs'); // Erase if already required
 const MODEL = require('../constants/models');
 
 // Declare the Schema of the Mongo model
-var userSchema = new mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
     username: {
       type: String,
@@ -22,6 +22,7 @@ var userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
+      select: false,
     },
     avatar: {
       type: String,
@@ -50,7 +51,7 @@ userSchema.pre('save', async function (next) {
 userSchema.methods.comparePassword = async function (
   candidatePassword,
 ) {
-  return bcrypt.compare(candidatePassword, this.password);
+  return await bcrypt.compare(candidatePassword, this.password);
 };
 
 //Export the model
