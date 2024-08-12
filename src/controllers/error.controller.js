@@ -12,8 +12,9 @@ const handleCastErrorDB = (err) => {
 // Giả sử 'email' là trường unique
 // User.create({ email: 'existing@email.com' });
 const handleDuplicateFieldsDB = (err) => {
-  const value = err.msg.match(/(["'])(\\?.)*?\1/)[0];
-  const message = `Duplicate field value: ${value}. Please use another value!`;
+  console.log("::: ~ handleDuplicateFieldsDB ~ err:", err)
+  // const value = err.msg.match(/(["'])(\\?.)*?\1/)[0];
+  const message = `Duplicate field value: ${err.value} for field: ${Object.keys(err.keyValue)[0]}`;
   return new AppError(message, 400);
 };
 
@@ -97,14 +98,10 @@ const sendErrorProd = (err, res) => {
 module.exports = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'error';
-  console.log('Error')
-  return res.status(err.status || 500).json({
-    status: err.status,
-    message: err.message,
-  })
-  if (process.env.NODE_ENV === 'development') {
+
+  if (process.env.NODE_ENV !== 'production') {
     sendErrorDev(err, res);
-  } else if (process.env.NODE_ENV === 'production') {
+  } else  {
     let error = { ...err };
     error.message = err.message;
 

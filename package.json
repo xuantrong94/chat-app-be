@@ -4,7 +4,7 @@
   "main": "main.js",
   "scripts": {
     "prepare": "husky",
-    "start": "node main.js --watch",
+    "start": "SET NODE_ENV=production&&node main.js --watch",
     "dev": "nodemon main.js",
     "precommit": "lint-staged",
     "prepush": "npm test",
