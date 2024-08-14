@@ -28,10 +28,6 @@ exports.getConversation = catchAsync(async (req, res, next) => {
 });
 
 exports.createConversation = catchAsync(async (req, res) => {
-  console.log(
-    '::: ~ exports.createConversation=catchAsync ~ req.body.participants:',
-    req.body.participants,
-  );
   const participants = [req.user._id, ...req.body.participants];
   const conversation = await Conversation.create({
     participants,
